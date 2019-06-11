@@ -6,7 +6,7 @@ const Order = (props) => {
     let ingredientsArr = Object.keys(props.order.ingredients)
         .map(key => {
             return [...Array(props.order.ingredients[key])].map((_, i) => {
-                return <span className={styles.OrderIngs} key={props.order.id}><strong>{key} : </strong>{props.order.ingredients[key]}</span>
+                return <span className={styles.OrderIngs} key={props.order.id+'ings'+i}><strong>{key} : </strong>{props.order.ingredients[key]}</span>
             })
         })
 

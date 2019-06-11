@@ -1,4 +1,4 @@
-.DrawerToggle {
+.DrawerHamburgerMenu {
     width: 40px;
     height: 100%;
     display: flex;
@@ -10,14 +10,14 @@
     cursor: pointer;
 }
 
-.DrawerToggle div {
+.DrawerHamburgerMenu div {
     width: 90%;
     height: 3px;
     background-color: white;
 }
 
 @media (min-width: 500px) {
-    .DrawerToggle {
+    .DrawerHamburgerMenu {
         display: none;
     }
 }
