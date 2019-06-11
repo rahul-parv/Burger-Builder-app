@@ -33,7 +33,6 @@ class BurgerBuilder extends Component {
     }
 
     purchaseToggleHandler = () => {
-        console.log("this.props", this.props)
         if (this.props.isAuthenticated) {
             this.setState((prevState) => {
                 return { purchasing: !prevState.purchasing }
