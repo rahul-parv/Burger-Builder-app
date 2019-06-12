@@ -1,5 +1,7 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders';
+import Auth from '../../shared/Auth';
+const auth = new Auth();
 
 // PURCHASEING BURGER ACTIONS..
 export const purchaseBurgerInit = () => {
@@ -64,9 +66,10 @@ const fetchOrderListFail = (error) => {
     }
 }
 
-export const fetchOrderList = (access_token) => {
+export const fetchOrderList = () => {
     return dispatch => {
         dispatch(fetchOrderListStart());
+        const access_token = auth.getAccessToken();
         axios.get('/orders.json?auth='+access_token)
             .then(response => {
                 let fetchedOrders = [];

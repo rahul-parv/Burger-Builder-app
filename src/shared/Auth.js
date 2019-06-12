@@ -4,6 +4,10 @@ const ON_SUCCESS_REDIRECT = "/";
 const ON_FAIL_REDIRECT = "/";
 
 export default class {
+    accessToken;
+    idToken;
+    expiresAt;
+
     auth0 = new Auth0.WebAuth({
         domain: 'rj-auth.auth0.com',
         clientID: 'KIj84BllENg8vclRqSJrLNiQCe1gFLe0',
@@ -14,7 +18,11 @@ export default class {
 
     constructor() {
         this.login = this.login.bind(this);
+        // this.logout = this.logout.bind(this);
         this.handleAuthentication = this.handleAuthentication.bind(this);
+        this.isAuthenticated = this.isAuthenticated.bind(this);
+        this.getAccessToken = this.getAccessToken.bind(this);
+        this.getIdToken = this.getIdToken.bind(this);
     }
 
     login() {
@@ -24,11 +32,7 @@ export default class {
     handleAuthentication() {
         this.auth0.parseHash((err, authResult) => {
             if (authResult && authResult.accessToken && authResult.idToken) {
-                // this.setSession(authResult);
-                const expiresAt = JSON.stringify((authResult.expiresIn)*1000 + new Date().getTime());
-                localStorage.setItem('access_token',authResult.accessToken);
-                localStorage.setItem('id_token',authResult.idToken);
-                localStorage.setItem('expires_at', expiresAt);
+                this.setSession(authResult);
                 window.location.hash = "";
                 window.location.pathname = ON_SUCCESS_REDIRECT
             } else if (err) {
@@ -39,11 +43,31 @@ export default class {
         });
     }
 
+    setSession(authResult) {
+        const expiresAt = JSON.stringify((authResult.expiresIn) * 1000 + new Date().getTime());
+
+        this.accessToken = authResult.accessToken;
+        this.idToken = authResult.idToken;
+        this.expiresAt = expiresAt;
+
+        localStorage.setItem('access_token', authResult.accessToken);
+        localStorage.setItem('id_token', authResult.idToken);
+        localStorage.setItem('expires_at', expiresAt);
+    }
+
     isAuthenticated() {
-      // Check whether the current time is past the
-      // access token's expiry time
-      let expiresAt = JSON.parse(localStorage.getItem('expires_at') || null);
-      return new Date().getTime() < expiresAt;
+        // Check whether the current time is past the
+        // access token's expiry time
+        let expiresAt = this.expiresAt;
+        return new Date().getTime() < expiresAt;
+    }
+
+    getAccessToken() {
+        return this.accessToken | null;
+    }
+
+    getIdToken() {
+        return this.idToken | null;
     }
 
 }
