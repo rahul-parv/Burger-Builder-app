@@ -8,6 +8,7 @@ import Inputs from '../../../components/UI/Inputs/Inputs';
 import * as actions from '../../../store/actions/index';
 import WithErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../../axios-orders';
+import { updateObject, checkValidity } from '../../../shared/utility';
 
 class ContactData extends Component {
     state = {
@@ -33,7 +34,8 @@ class ContactData extends Component {
                 },
                 value: '',
                 validation: {
-                    required: true
+                    required: true,
+                    isEmail: true,
                 },
                 valid: false,
                 modified: false
@@ -93,48 +95,14 @@ class ContactData extends Component {
         isFormValid: false
     }
 
-    checkValidity = (value, rules) => {
-        let isValid = true;
-        if (!rules) {
-            return true;
-        }
-        
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid
-        }
-
-        if (rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid
-        }
-
-        if (rules.isEmail) {
-            const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-            isValid = pattern.test(value) && isValid
-        }
-
-        if (rules.isNumeric) {
-            const pattern = /^\d+$/;
-            isValid = pattern.test(value) && isValid
-        }
-
-        return isValid;
-    }
-
     inputChangeHandler = (event, elemIdentifier) => {
-        const updatedOrderForm = {
-            ...this.state.orderForm
-        }
-        const updatedFormElem = {
-            ...updatedOrderForm[elemIdentifier]
-        }
-        updatedFormElem.modified = true; // set invalid if field is touched.
-        updatedFormElem.value = event.target.value;
-        updatedFormElem.valid = this.checkValidity(event.target.value, updatedFormElem.validation);
-        updatedOrderForm[elemIdentifier] = updatedFormElem;
+        const updatedOrderForm = updateObject(this.state.orderForm, {
+            [elemIdentifier]: updateObject(this.state.orderForm[elemIdentifier], {
+                modified: true, // set invalid if field is touched.
+                value: event.target.value,
+                valid: checkValidity(event.target.value, this.state.orderForm[elemIdentifier].validation)
+            })
+        });
 
         let isFormValid = true;
         for (const key in updatedOrderForm) {

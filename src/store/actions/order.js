@@ -64,10 +64,10 @@ const fetchOrderListFail = (error) => {
     }
 }
 
-export const fetchOrderList = () => {
+export const fetchOrderList = (access_token) => {
     return dispatch => {
         dispatch(fetchOrderListStart());
-        axios.get('/orders.json')
+        axios.get('/orders.json?auth='+access_token)
             .then(response => {
                 let fetchedOrders = [];
                 for (const key in response.data) {

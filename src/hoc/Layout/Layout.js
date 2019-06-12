@@ -9,7 +9,7 @@ class layout extends Component {
         showSideDrawer: false
     }
 
-    sideDrawerToggleHandler = () => {
+    hamburgerClickHandler = () => {
         this.setState((prevState) => {
             return { showSideDrawer: !prevState.showSideDrawer }
         });
@@ -18,10 +18,10 @@ class layout extends Component {
     render() {
         return (
             <Aux>
-                <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
+                <Toolbar hamburgerClicked={this.hamburgerClickHandler} />
                 <SideDrawer
                     open={this.state.showSideDrawer}
-                    toggle={this.sideDrawerToggleHandler} />
+                    toggle={this.hamburgerClickHandler} />
                 <main className={styles.Content}>
                     {this.props.children}
                 </main>
