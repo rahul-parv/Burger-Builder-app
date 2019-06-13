@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import Aux from '../Aux/Aux';
 import styles from './Layout.css';
 import Toolbar from '../../components/Navigations/Toolbar/Toolbar';
 import SideDrawer from '../../components/Navigations/SideDrawer/SideDrawer';
+import Auth0 from '../../containers/Auth/Auth0/Auth0';
 
 class layout extends Component {
     state = {
-        showSideDrawer: false
+        showSideDrawer: false,
+        isAuthenticated: false
+    }
+
+    componentDidMount() {
+        const auth = new Auth0();
+        this.setState({isAuthenticated: auth.isAuthenticated()});
+
     }
 
     hamburgerClickHandler = () => {
@@ -21,10 +28,10 @@ class layout extends Component {
         return (
             <Aux>
                 <Toolbar
-                    isAuth={this.props.isAuthenticated}
+                    isAuth={this.state.isAuthenticated}
                     hamburgerClicked={this.hamburgerClickHandler} />
                 <SideDrawer
-                    isAuth={this.props.isAuthenticated}
+                    isAuth={this.state.isAuthenticated}
                     open={this.state.showSideDrawer}
                     toggle={this.hamburgerClickHandler} />
                 <main className={styles.Content}>
@@ -35,10 +42,4 @@ class layout extends Component {
     }
 };
 
-const mapStateToProps = state => {
-    return {
-        isAuthenticated: state.auth.idToken !== null
-    }
-}
-
-export default connect(mapStateToProps)(layout);
+export default layout;

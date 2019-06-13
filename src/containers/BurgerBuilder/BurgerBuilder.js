@@ -10,15 +10,19 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../store/actions/index';
+import Auth0 from '../Auth/Auth0/Auth0';
 
 export class BurgerBuilder extends Component {
     state = {
         purchasing: false,
         loading: false,
-        error: false
+        error: false,
+        isAuthenticated: false
     }
 
     componentDidMount() {
+        const auth = new Auth0();
+        this.setState({isAuthenticated: auth.isAuthenticated()});
         this.props.onInitIngredients();
     }
 
@@ -33,12 +37,12 @@ export class BurgerBuilder extends Component {
     }
 
     purchaseToggleHandler = () => {
-        if (this.props.isAuthenticated) {
+        if (this.state.isAuthenticated) {
             this.setState((prevState) => {
                 return { purchasing: !prevState.purchasing }
             });
         } else {
-            this.props.onSetAuthRedirectPath('/checkout');
+            // this.props.onSetAuthRedirectPath('/checkout');
             this.props.history.push('/auth');
         }
     }
@@ -80,7 +84,7 @@ export class BurgerBuilder extends Component {
                     disabled={disabledInfo}
                     totalPrice={this.props.tPrice}
                     purchasable={this.isPurchasable(this.props.ings)}
-                    isAuth={this.props.isAuthenticated} />
+                    isAuth={this.state.isAuthenticated} />
             </Aux>
         }
 
@@ -101,7 +105,7 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerState.ingredients,
         tPrice: state.burgerState.totalPrice,
-        isAuthenticated: state.auth.idToken !== null
+        // isAuthenticated: state.auth.idToken !== null
     }
 }
 
@@ -111,7 +115,7 @@ const mapDispatchToProps = dispatch => {
         onIngredientRemoved: (ingsName) => dispatch(actions.removeIngredient(ingsName)),
         onInitIngredients: () => dispatch(actions.initIngredients()),
         onPurchaseBurgerInit: () => dispatch(actions.purchaseBurgerInit()),
-        onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
+        // onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
     }
 }
 

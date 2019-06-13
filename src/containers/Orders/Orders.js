@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Order from './Order/Order'
-import axios from '../../axios-orders'
-import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
-import Spinner from '../../components/UI/Spinner/Spinner'
-import * as actions from '../../store/actions/index'
+import Order from './Order/Order';
+import axios from '../../axios-orders';
+import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import * as actions from '../../store/actions/index';
+import Auth0 from '../Auth/Auth0/Auth0';
 
 class Orders extends Component {
 
     componentDidMount() {
-        this.props.onFetchOrderList(this.props.token, this.props.userId);
+        const auth = new Auth0();
+        const accessToken = auth.getAccessToken();
+        const idToken = auth.getIdToken();
+        this.props.onFetchOrderList(accessToken, idToken);
     }
 
     render() {
@@ -32,8 +36,6 @@ const mapStateToProps = state => {
     return {
         loading: state.orderState.loading,
         orders: state.orderState.orders,
-        token: state.auth.idToken,
-        userId: state.auth.userId
     }
 }
 

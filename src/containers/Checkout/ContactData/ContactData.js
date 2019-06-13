@@ -168,8 +168,8 @@ const mapStateToProps = state => {
         ings: state.burgerState.ingredients,
         tPrice: state.burgerState.totalPrice,
         loading: state.orderState.loading,
-        token: state.auth.idToken,
-        userId: state.auth.userId
+        // token: state.auth.idToken,
+        // userId: state.auth.userId
     }
 }
 
